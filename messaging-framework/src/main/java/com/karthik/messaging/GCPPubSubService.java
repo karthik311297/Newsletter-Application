@@ -7,11 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.api.gax.core.CredentialsProvider;
-import com.google.api.gax.core.NoCredentialsProvider;
-import com.google.api.gax.grpc.GrpcTransportChannel;
-import com.google.api.gax.rpc.FixedTransportChannelProvider;
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.api.gax.rpc.TransportChannelProvider;
 import com.google.cloud.pubsub.v1.SubscriptionAdminClient;
 import com.google.cloud.pubsub.v1.SubscriptionAdminSettings;
 import com.google.cloud.pubsub.v1.TopicAdminClient;
@@ -21,9 +17,7 @@ import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PushConfig;
 import com.google.pubsub.v1.SubscriptionName;
 import com.google.pubsub.v1.TopicName;
-
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import com.karthik.messaging.publisher.GCPPubSubManager;
 
 @Component
 public class GCPPubSubService implements MessageQueueService
@@ -31,17 +25,17 @@ public class GCPPubSubService implements MessageQueueService
     @Autowired
     private GCPPubSubConfig GCPPubSubConfig;
     
+    @Autowired
+    private GCPPubSubManager gcpPubSubManager;
+    
     @Override
     public boolean createTopic(String topic)
     {
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(TopicAdminClient topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             TopicName topicName = TopicName.of(gcpProjectID, topic);
             if(!doesTopicAlreadyExists(topicAdminClient, topicName))
@@ -61,13 +55,10 @@ public class GCPPubSubService implements MessageQueueService
     public boolean deleteTopic(String topic)
     {
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(TopicAdminClient topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             TopicName topicName = TopicName.of(gcpProjectID, topic);
             if(doesTopicAlreadyExists(topicAdminClient, topicName))
@@ -88,13 +79,10 @@ public class GCPPubSubService implements MessageQueueService
     {
         List<String> topics = new ArrayList<>();
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(TopicAdminClient topicAdminClient = TopicAdminClient.create(TopicAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             TopicAdminClient.ListTopicsPagedResponse response = topicAdminClient
                     .listTopics(ProjectName.of(gcpProjectID));
@@ -125,15 +113,12 @@ public class GCPPubSubService implements MessageQueueService
     public boolean createSubscriptionForTopic(String topic)
     {
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
         ProjectTopicName topicName = ProjectTopicName.of(gcpProjectID, topic);
         SubscriptionName subscriptionName = SubscriptionName.of(gcpProjectID, topic);
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             if(!doesSubscriptionAlreadyExists(subscriptionAdminClient, subscriptionName))
             {
@@ -142,6 +127,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
+            System.out.println(e);
             return false;
         }
         return true;
@@ -151,14 +137,11 @@ public class GCPPubSubService implements MessageQueueService
     public boolean deleteSubscriptionForTopic(String topic)
     {
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
         SubscriptionName subscriptionName = SubscriptionName.of(gcpProjectID, topic);
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             if(doesSubscriptionAlreadyExists(subscriptionAdminClient, subscriptionName))
             {
@@ -190,13 +173,10 @@ public class GCPPubSubService implements MessageQueueService
     {
         List<String> subscriptions = new ArrayList<>();
         String gcpProjectID = GCPPubSubConfig.getGcpProjectID();
-        String gcpPubSubHost = GCPPubSubConfig.getGcpPubSubHost();
-        ManagedChannel channel = ManagedChannelBuilder.forTarget(gcpPubSubHost).usePlaintext().build();
-        TransportChannelProvider channelProvider = FixedTransportChannelProvider.create(GrpcTransportChannel.create(channel));
-        CredentialsProvider credentialsProvider = NoCredentialsProvider.create();
+        CredentialsProvider credentialsProvider = gcpPubSubManager.getCredentialProvider();
         try(SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create(SubscriptionAdminSettings.newBuilder()
                 .setCredentialsProvider(credentialsProvider)
-                .setTransportChannelProvider(channelProvider).build()))
+                .setTransportChannelProvider(gcpPubSubManager.getChannelProvider()).build()))
         {
             SubscriptionAdminClient.ListSubscriptionsPagedResponse response = subscriptionAdminClient
                     .listSubscriptions(ProjectName.of(gcpProjectID));

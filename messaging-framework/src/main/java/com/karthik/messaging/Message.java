@@ -2,14 +2,14 @@ package com.karthik.messaging;
 
 public class Message
 {
-    private Object body;
+    private String body;
     
-    public Object getBody()
+    public String getBody()
     {
         return body;
     }
     
-    public void setBody(Object body)
+    public void setBody(String body)
     {
         this.body = body;
     }

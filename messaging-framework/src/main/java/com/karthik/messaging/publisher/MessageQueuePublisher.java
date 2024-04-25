@@ -4,5 +4,5 @@ import com.karthik.messaging.Message;
 
 public interface MessageQueuePublisher
 {
-    boolean publish(String topic, Message message);
+    boolean publish(String topic, Message message) throws InterruptedException;
 }

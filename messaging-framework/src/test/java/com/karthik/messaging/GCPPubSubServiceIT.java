@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration(classes = MessagingFrameworkApplication.class)
 class GCPPubSubServiceIT
 {
-    public static final String TOPIC_1 = "topic1";
+    private static final String TOPIC_1 = "topic1";
     @Autowired
     MessageQueueService messageQueueService;
     
