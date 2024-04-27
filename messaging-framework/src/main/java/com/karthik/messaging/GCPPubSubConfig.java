@@ -1,32 +1,27 @@
 package com.karthik.messaging;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "app.newsletter")
 public class GCPPubSubConfig
 {
+    @Value("${app.newsletter.gcpProjectID}")
     private String gcpProjectID;
+    @Value("${app.newsletter.gcpPubSubHost}")
     private String gcpPubSubHost;
     
+    @Bean
     public String getGcpProjectID()
     {
         return gcpProjectID;
     }
     
-    public void setGcpProjectID(String gcpProjectID)
-    {
-        this.gcpProjectID = gcpProjectID;
-    }
-    
+    @Bean
     public String getGcpPubSubHost()
     {
         return gcpPubSubHost;
     }
     
-    public void setGcpPubSubHost(String gcpPubSubHost)
-    {
-        this.gcpPubSubHost = gcpPubSubHost;
-    }
 }

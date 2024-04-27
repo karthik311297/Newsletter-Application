@@ -9,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
+import com.karthik.messaging.GCPPubSubConfig;
+
 @SpringBootTest
 @ContextConfiguration(classes = EmailServiceApplication.class)
 class EmailServiceImplIT
 {
     @Autowired
     private EmailService emailService;
+    
+    @Autowired
+    private GCPPubSubConfig gcpPubSubConfig;
     
     @Test
     public void shouldSendMail()
