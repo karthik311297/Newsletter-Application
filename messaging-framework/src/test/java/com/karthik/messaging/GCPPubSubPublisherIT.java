@@ -78,11 +78,13 @@ public class GCPPubSubPublisherIT
         }
         catch(TimeoutException timeoutException)
         {
+            System.out.println(timeoutException);
             // Shut down the subscriber after 30s. Stop receiving messages.
             subscriber.stopAsync();
         }
         catch(InterruptedException e)
         {
+            System.out.println(e);
             subscriber.stopAsync();
         }
     }

@@ -103,6 +103,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(NotFoundException e)
         {
+            System.out.println(e);
             return false;
         }
         return true;
@@ -150,6 +151,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
+            System.out.println(e);
             return false;
         }
         return true;
@@ -163,6 +165,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(NotFoundException e)
         {
+            System.out.println(e);
             return false;
         }
         return true;
