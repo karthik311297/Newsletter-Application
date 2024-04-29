@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.karthik.messaging.EmailMessageBody;
 import com.karthik.messaging.Message;
 import com.karthik.messaging.publisher.GCPPubSubPublisher;
 

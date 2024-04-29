@@ -1,4 +1,4 @@
-package com.karthik.emailservice;
+package com.karthik.messaging;
 
 import java.util.List;
 

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.pubsub.v1.PubsubMessage;
+import com.karthik.messaging.EmailMessageBody;
 import com.karthik.messaging.subscriber.AbstractMessageReceiver;
 
 @Component

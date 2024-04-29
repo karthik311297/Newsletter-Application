@@ -33,6 +33,8 @@ public class EmailTopicSubscriptionWorker implements ApplicationListener<Applica
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event)
     {
+        messageQueueService.createTopic(EMAIL_TOPIC);
+        messageQueueService.createSubscriptionForTopic(EMAIL_TOPIC);
         Executors.newSingleThreadExecutor().submit(new Runnable()
         {
             @Override
@@ -45,9 +47,6 @@ public class EmailTopicSubscriptionWorker implements ApplicationListener<Applica
     
     private void runSubscription()
     {
-        messageQueueService.createTopic(EMAIL_TOPIC);
-        messageQueueService.createSubscriptionForTopic(EMAIL_TOPIC);
-        
         Subscriber subscriber = null;
         ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(gcpPubSubConfig.getGcpProjectID(), EMAIL_TOPIC);
         
