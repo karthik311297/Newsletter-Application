@@ -14,13 +14,14 @@ import com.karthik.newsletterapp.model.identifier.ArticleNewsletterIdentifier;
 @IdClass(ArticleNewsletterIdentifier.class)
 public class ArticleNewsletter
 {
+    @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "newsletter", referencedColumnName = "id")
     private Newsletter newsletter;
     
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "article", referencedColumnName = "id")
     private Article article;
     
     public Newsletter getNewsletter()

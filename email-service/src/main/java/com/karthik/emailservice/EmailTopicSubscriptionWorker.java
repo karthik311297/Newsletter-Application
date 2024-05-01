@@ -1,5 +1,7 @@
 package com.karthik.emailservice;
 
+import static com.karthik.messaging.Topics.EMAIL_TOPIC;
+
 import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,6 @@ import com.karthik.messaging.publisher.GCPPubSubManager;
 @Component
 public class EmailTopicSubscriptionWorker implements ApplicationListener<ApplicationReadyEvent>
 {
-    private static final String EMAIL_TOPIC = "EMAIL-TOPIC";
-
     @Autowired
     private GCPPubSubManager gcpPubSubManager;
     

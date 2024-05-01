@@ -15,15 +15,15 @@ import jakarta.persistence.Table;
 public class Newsletter
 {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(nullable = false)
     private String name;
     
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
-    private User user;
+    @JoinColumn(name = "userDetail", referencedColumnName = "id")
+    private UserDetail userDetail;
     
     public Long getId()
     {
@@ -45,13 +45,13 @@ public class Newsletter
         this.name = name;
     }
     
-    public User getUser()
+    public UserDetail getUserDetail()
     {
-        return user;
+        return userDetail;
     }
     
-    public void setUser(User user)
+    public void setUserDetail(UserDetail userDetail)
     {
-        this.user = user;
+        this.userDetail = userDetail;
     }
 }

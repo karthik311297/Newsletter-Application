@@ -1,5 +1,7 @@
 package com.karthik.emailservice;
 
+import static com.karthik.messaging.Topics.EMAIL_TOPIC;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,8 +20,6 @@ import com.karthik.messaging.publisher.GCPPubSubPublisher;
 @ContextConfiguration(classes = EmailServiceApplication.class)
 class EmailTopicSubscriptionWorkerIT
 {
-    private static final String EMAIL_TOPIC = "EMAIL-TOPIC";
-    
     @Autowired
     GCPPubSubPublisher gcpPubSubPublisher;
     

@@ -16,13 +16,13 @@ public class Subscription
 {
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "newsletter", referencedColumnName = "id")
     private Newsletter newsletter;
     
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
-    private User user;
+    @JoinColumn(name = "userDetail", referencedColumnName = "id")
+    private UserDetail userDetail;
     
     public Newsletter getNewsletter()
     {
@@ -34,13 +34,13 @@ public class Subscription
         this.newsletter = newsletter;
     }
     
-    public User getUser()
+    public UserDetail getUserDetail()
     {
-        return user;
+        return userDetail;
     }
     
-    public void setUser(User user)
+    public void setUserDetail(UserDetail userDetail)
     {
-        this.user = user;
+        this.userDetail = userDetail;
     }
 }

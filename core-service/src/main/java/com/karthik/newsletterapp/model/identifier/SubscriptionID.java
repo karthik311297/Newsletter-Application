@@ -6,16 +6,16 @@ import java.util.Objects;
 public class SubscriptionID implements Serializable
 {
     private Long newsletter;
-    private Long user;
+    private Long userDetail;
     
     public SubscriptionID()
     {
     }
     
-    public SubscriptionID(Long newsletter, Long user)
+    public SubscriptionID(Long newsletter, Long userDetail)
     {
         this.newsletter = newsletter;
-        this.user = user;
+        this.userDetail = userDetail;
     }
     
     public Long getNewsletter()
@@ -28,14 +28,14 @@ public class SubscriptionID implements Serializable
         this.newsletter = newsletter;
     }
     
-    public Long getUser()
+    public Long getUserDetail()
     {
-        return user;
+        return userDetail;
     }
     
-    public void setUser(Long user)
+    public void setUserDetail(Long userDetail)
     {
-        this.user = user;
+        this.userDetail = userDetail;
     }
     
     @Override
@@ -43,12 +43,12 @@ public class SubscriptionID implements Serializable
     {
         if(this == o) return true;
         if(!(o instanceof SubscriptionID that)) return false;
-        return getNewsletter().equals(that.getNewsletter()) && getUser().equals(that.getUser());
+        return getNewsletter().equals(that.getNewsletter()) && getUserDetail().equals(that.getUserDetail());
     }
     
     @Override
     public int hashCode()
     {
-        return Objects.hash(getNewsletter(), getUser());
+        return Objects.hash(getNewsletter(), getUserDetail());
     }
 }

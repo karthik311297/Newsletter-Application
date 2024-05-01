@@ -9,9 +9,6 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import com.karthik.newsletterapp.model.identifier.ArticleLikedID;
 
-@Entity
-@Table(name = "article_liked")
-@IdClass(ArticleLikedID.class)
 public class ArticleLiked
 {
     @Id
@@ -21,7 +18,7 @@ public class ArticleLiked
     
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
-    private User user;
+    private UserDetail userDetail;
     
     public Article getArticle()
     {
@@ -33,13 +30,13 @@ public class ArticleLiked
         this.article = article;
     }
     
-    public User getUser()
+    public UserDetail getUserDetail()
     {
-        return user;
+        return userDetail;
     }
     
-    public void setUser(User user)
+    public void setUserDetail(UserDetail userDetail)
     {
-        this.user = user;
+        this.userDetail = userDetail;
     }
 }
