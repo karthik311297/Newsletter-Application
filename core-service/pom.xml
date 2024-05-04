@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     
+    <groupId>com.karthik</groupId>
     <artifactId>core-service</artifactId>
     <version>1.0.0</version>
     

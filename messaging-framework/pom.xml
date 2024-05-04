@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     
+    <groupId>com.karthik</groupId>
     <artifactId>messaging-framework</artifactId>
     <version>1.0.0</version>
     
@@ -88,13 +89,6 @@
                     <includes>
                         <include>**/*IT.java</include>
                     </includes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <mainClass>com.karthik.messaging.MessagingFrameworkApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
