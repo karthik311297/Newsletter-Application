@@ -47,5 +47,19 @@ Tasks Status :
 - [x] Subscribing to a Newsletter using GCP pubsub topic subscription.
 - [x] Sending email when article is published in newsletter.
 - [ ] Commenting on articles.
-- [ ] Like and Count likes for articles
-- [ ] Refactor the Code !
+- [ ] Like and Count likes for articles.
+- [ ] Refactor the Code !.
+- [ ] Proper logging. (currently doing System.out.println! :P)
+
+---
+
+### Steps to build
+
+1. mvn clean install -DskipTests
+
+2. Running the tests in the child modules : 
+   1. mvn test (This will only run the Unit Tests)
+   2. mvn verify -DskipUTs (This will run only the Integration Tests)
+
+_Please note : for running the Integration tests, currently the docker containers for PostgreSql and GCP pubsub emulator needs to be manually started first. Will soon be shifting to TestContainers 
+Library which does not need these manual steps!_
