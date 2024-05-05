@@ -8,16 +8,21 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import com.karthik.newsletterapp.model.identifier.ArticleLikedID;
+import com.karthik.newsletterapp.model.identifier.SubscriptionID;
 
+@Entity
+@Table(name = "article_liked")
+@IdClass(ArticleLikedID.class)
 public class ArticleLiked
 {
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "article", referencedColumnName = "id")
     private Article article;
     
+    @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "userDetail", referencedColumnName = "id")
     private UserDetail userDetail;
     
     public Article getArticle()

@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.karthik.newsletterapp.controller.requests.NewsletterArticlePublishRequest;
+import com.karthik.newsletterapp.controller.requests.NewsletterRequest;
+import com.karthik.newsletterapp.controller.requests.NewsletterSubscriptionRequest;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.model.Newsletter;
 import com.karthik.newsletterapp.service.NewsletterService;

@@ -2,11 +2,15 @@ package com.karthik.newsletterapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.karthik.newsletterapp.controller.requests.ArticleLikeRequest;
+import com.karthik.newsletterapp.controller.requests.ArticleRequest;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.service.ArticleService;
 
@@ -25,5 +29,19 @@ public class ArticleController
         article.setContent(articleRequest.getContent());
         Article saved = articleService.createArticle(article, articleRequest.getUserID());
         return ResponseEntity.ok("Article saved with id : " + saved.getId());
+    }
+    
+    @PostMapping("/like")
+    public ResponseEntity<String> likeArticle(@RequestBody ArticleLikeRequest articleLikeRequest)
+    {
+        articleService.likeArticle(articleLikeRequest.getArticleID(), articleLikeRequest.getUserID());
+        return ResponseEntity.ok("Article Liked!");
+    }
+    
+    @GetMapping("/countlikes/{articleID}")
+    public ResponseEntity<Long> getArticleLikeCount(@PathVariable Long articleID)
+    {
+        long count = articleService.getArticleLikeCount(articleID);
+        return ResponseEntity.ok(count);
     }
 }
