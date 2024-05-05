@@ -1,4 +1,4 @@
-package com.karthik.newsletterapp.controller;
+package com.karthik.newsletterapp.controller.requests;
 
 public class NewsletterArticlePublishRequest
 {
