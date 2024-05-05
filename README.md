@@ -49,8 +49,9 @@ Tasks Status :
 - [x] Get all articles published in newsletter.
 - [ ] Commenting on articles.
 - [x] Like and Count likes for articles.
-- [ ] Refactor the Code !.
-- [ ] Proper logging. (currently doing System.out.println! :P)
+- [ ] Refactor the Code.
+- [ ] Verify project run as jars in command line.
+- [ ] Proper logging. (currently doing System.out.println!)
 - [ ] Optimize the jpa respositories, so that SQL scripts generated are optimized.
 
 ---
