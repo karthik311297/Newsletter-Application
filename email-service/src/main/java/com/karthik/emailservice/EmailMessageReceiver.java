@@ -24,6 +24,7 @@ public class EmailMessageReceiver extends AbstractMessageReceiver
             EmailMessageBody emailMessageBody = new ObjectMapper()
                     .readValue(messageData, EmailMessageBody.class);
             emailService.sendMail(emailMessageBody.getTo(), emailMessageBody.getSubject(), emailMessageBody.getBody());
+            System.out.println("consumed message with ID : " + pubsubMessage.getMessageId());
         }
         catch(JsonProcessingException e)
         {

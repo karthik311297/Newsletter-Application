@@ -2,6 +2,7 @@ package com.karthik.newsletterapp.service;
 
 import static com.karthik.messaging.Topics.EMAIL_TOPIC;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import com.karthik.newsletterapp.model.ArticleNewsletter;
 import com.karthik.newsletterapp.model.Newsletter;
 import com.karthik.newsletterapp.model.Subscription;
 import com.karthik.newsletterapp.model.UserDetail;
-import com.karthik.newsletterapp.model.identifier.SubscriptionID;
 import com.karthik.newsletterapp.repository.ArticleNewsletterRepository;
 import com.karthik.newsletterapp.repository.ArticleRepository;
 import com.karthik.newsletterapp.repository.NewsletterRepository;
@@ -116,8 +116,17 @@ public class NewsletterService
                 .collect(Collectors.toList());
     }
     
-    private List<Article> getArticlesInNewsletter(Long newsletterID)
+    public List<Article> getArticlesInNewsletter(Long newsletterID)
     {
-        return null;
+        Optional<Newsletter> optionalNewsletter = newsletterRepository.findById(newsletterID);
+        if(optionalNewsletter.isPresent())
+        {
+            return articleNewsletterRepository
+                    .findAllByNewsletter(optionalNewsletter.get())
+                    .stream()
+                    .map(ArticleNewsletter::getArticle)
+                    .collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }

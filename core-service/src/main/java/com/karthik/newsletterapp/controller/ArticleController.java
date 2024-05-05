@@ -2,7 +2,6 @@ package com.karthik.newsletterapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,7 @@ public class ArticleController
     {
         Article article = new Article();
         article.setTitle(articleRequest.getTitle());
-        article.setContent(articleRequest.getTitle());
+        article.setContent(articleRequest.getContent());
         Article saved = articleService.createArticle(article, articleRequest.getUserID());
         return ResponseEntity.ok("Article saved with id : " + saved.getId());
     }

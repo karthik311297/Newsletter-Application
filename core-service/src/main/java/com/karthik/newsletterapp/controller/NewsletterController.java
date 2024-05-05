@@ -1,7 +1,11 @@
 package com.karthik.newsletterapp.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.model.Newsletter;
-import com.karthik.newsletterapp.model.Subscription;
-import com.karthik.newsletterapp.service.ArticleService;
 import com.karthik.newsletterapp.service.NewsletterService;
 
 @RestController
@@ -43,11 +45,19 @@ public class NewsletterController
         try
         {
             newsletterService.publishArticleInNewsletter(newsletterArticlePublishRequest.getNewsletterID(), newsletterArticlePublishRequest.getArticleID());
-            return ResponseEntity.ok("Successfully subscribed to the newsletter!");
+            return ResponseEntity.ok("Successfully published article to the newsletter!");
         }
         catch(JsonProcessingException | InterruptedException e)
         {
             return ResponseEntity.internalServerError().body("Failed to subscribe to newsletter!");
         }
     }
+    
+    @GetMapping("/{newsletterID}")
+    public ResponseEntity<List<Article>> getArticlesInNewsletter(@PathVariable Long newsletterID)
+    {
+        List<Article> articles = newsletterService.getArticlesInNewsletter(newsletterID);
+        return ResponseEntity.ok(articles);
+    }
+    
 }

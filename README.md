@@ -50,6 +50,7 @@ Tasks Status :
 - [ ] Like and Count likes for articles.
 - [ ] Refactor the Code !.
 - [ ] Proper logging. (currently doing System.out.println! :P)
+- [ ] Optimize the jpa respositories, so that SQL scripts generated are optimized.
 
 ---
 
