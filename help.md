@@ -59,6 +59,14 @@ create table if not exists subscription (
 	primary key(newsletter, userDetail)
 );
 
+create table if not exists article_liked (
+	article bigint not null,
+	userDetail bigint not null,
+	foreign key(article) references article on delete cascade on update cascade,
+	foreign key(userDetail) references userdetail on delete cascade on update cascade,
+	primary key(article, userDetail)
+);
+
 
 drop table userdetail ;
 
@@ -80,5 +88,7 @@ select * from newsletter n;
 select * from subscription s;
 
 select * from article_newsletter an ;
+
+select * from article_liked ;
 
 ```
