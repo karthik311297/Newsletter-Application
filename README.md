@@ -46,6 +46,7 @@ Tasks Status :
 - [x] Publishing of Article to Newsletter using GCP publisher.
 - [x] Subscribing to a Newsletter using GCP pubsub topic subscription.
 - [x] Sending email when article is published in newsletter.
+- [x] Get all articles published in newsletter.
 - [ ] Commenting on articles.
 - [x] Like and Count likes for articles.
 - [ ] Refactor the Code !.
