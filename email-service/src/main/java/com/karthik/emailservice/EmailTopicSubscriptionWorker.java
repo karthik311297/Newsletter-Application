@@ -2,8 +2,11 @@ package com.karthik.emailservice;
 
 import static com.karthik.messaging.Topics.EMAIL_TOPIC;
 
+import java.text.MessageFormat;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -29,6 +32,8 @@ public class EmailTopicSubscriptionWorker implements ApplicationListener<Applica
     
     @Autowired
     private EmailMessageReceiver emailMessageReceiver;
+    
+    private final Logger logger = LoggerFactory.getLogger(EmailTopicSubscriptionWorker.class);
     
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event)
@@ -57,11 +62,12 @@ public class EmailTopicSubscriptionWorker implements ApplicationListener<Applica
                     .setCredentialsProvider(gcpPubSubManager.getCredentialProvider()).build();
             // Start the subscriber.
             subscriber.startAsync().awaitRunning();
-            System.out.printf("Listening for messages on %s:\n", subscriptionName.toString());
+            logger.info(MessageFormat.format("Listening for messages on: {0}", subscriptionName));
             subscriber.awaitTerminated();
         }
         catch(Exception e)
         {
+            logger.error(e.getMessage());
             subscriber.stopAsync().awaitTerminated();
         }
         finally

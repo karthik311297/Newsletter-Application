@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOGS" value="./logs"/>
+    <appender name="FILE-APPENDER"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/core-service.log</file>
+        <encoder
+                class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %C [%t] %m%n</Pattern>
+        </encoder>
+        
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- rollover daily and when the file reaches 10 MegaBytes -->
+            <fileNamePattern>${LOGS}/archived/core-service-%d{yyyy-MM-dd}.%i.log
+            </fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy
+                    class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+    
+    <logger name="com.karthik.messaging" additivity="false" level="debug">
+        <appender-ref ref="FILE-APPENDER"/>
+    </logger>
+    
+    <logger name="com.karthik.newsletterapp" additivity="false" level="debug">
+        <appender-ref ref="FILE-APPENDER"/>
+    </logger>
+    
+    <logger name="org.hibernate.SQL" additivity="false" level="debug">
+        <appender-ref ref="FILE-APPENDER"/>
+    </logger>
+    
+    <root level="info">
+        <appender-ref ref="FILE-APPENDER"/>
+    </root>
+
+</configuration>

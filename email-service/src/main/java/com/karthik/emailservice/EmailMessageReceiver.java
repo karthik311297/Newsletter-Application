@@ -1,9 +1,12 @@
 package com.karthik.emailservice;
 
+import java.text.MessageFormat;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.pubsub.v1.PubsubMessage;
 import com.karthik.messaging.EmailMessageBody;
@@ -14,6 +17,7 @@ public class EmailMessageReceiver extends AbstractMessageReceiver
 {
     @Autowired
     private EmailService emailService;
+    private final Logger logger = LoggerFactory.getLogger(EmailMessageReceiver.class);
     
     @Override
     protected void consumeMessage(PubsubMessage pubsubMessage)
@@ -24,11 +28,12 @@ public class EmailMessageReceiver extends AbstractMessageReceiver
             EmailMessageBody emailMessageBody = new ObjectMapper()
                     .readValue(messageData, EmailMessageBody.class);
             emailService.sendMail(emailMessageBody.getTo(), emailMessageBody.getSubject(), emailMessageBody.getBody());
-            System.out.println("consumed message with ID : " + pubsubMessage.getMessageId());
+            logger.info(
+                    MessageFormat.format("consumed message with ID : {0}", pubsubMessage.getMessageId()));
         }
-        catch(JsonProcessingException e)
+        catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
     }
 }

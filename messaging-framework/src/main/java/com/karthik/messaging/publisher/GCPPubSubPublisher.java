@@ -1,8 +1,11 @@
 package com.karthik.messaging.publisher;
 
+import java.text.MessageFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +30,8 @@ public class GCPPubSubPublisher implements MessageQueuePublisher
     @Autowired
     private GCPPubSubManager gcpPubSubManager;
     
+    private static final Logger logger = LoggerFactory.getLogger(GCPPubSubPublisher.class);
+    
     @Override
     public boolean publish(String topic, Message message) throws InterruptedException
     {
@@ -46,20 +51,20 @@ public class GCPPubSubPublisher implements MessageQueuePublisher
                 @Override
                 public void onFailure(Throwable throwable)
                 {
-                    System.out.println(throwable.getMessage());
+                    logger.error(MessageFormat.format("Error while publishing message: {0}", throwable.getMessage()));
                 }
                 
                 @Override
                 public void onSuccess(String s)
                 {
-                    System.out.println("Published message ID :" + s);
+                    logger.info(MessageFormat.format("Published message ID :{0}", s));
                 }
             }, Executors.newSingleThreadExecutor());
             
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
             return false;
         }
         finally
@@ -67,6 +72,6 @@ public class GCPPubSubPublisher implements MessageQueuePublisher
             publisher.shutdown();
             publisher.awaitTermination(30, TimeUnit.SECONDS);
         }
-        return false;
+        return true;
     }
 }

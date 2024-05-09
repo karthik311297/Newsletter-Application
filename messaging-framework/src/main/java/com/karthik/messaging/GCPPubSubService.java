@@ -3,6 +3,8 @@ package com.karthik.messaging;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,8 @@ public class GCPPubSubService implements MessageQueueService
     @Autowired
     private GCPPubSubManager gcpPubSubManager;
     
+    private static final Logger logger = LoggerFactory.getLogger(GCPPubSubService.class);
+    
     @Override
     public boolean createTopic(String topic)
     {
@@ -45,7 +49,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -68,7 +72,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -90,7 +94,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
         return topics;
     }
@@ -103,7 +107,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(NotFoundException e)
         {
-            System.out.println(e);
+            logger.debug(e.getMessage());
             return false;
         }
         return true;
@@ -128,7 +132,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -151,7 +155,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
             return false;
         }
         return true;
@@ -165,7 +169,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(NotFoundException e)
         {
-            System.out.println(e);
+            logger.debug(e.getMessage());
             return false;
         }
         return true;
@@ -187,7 +191,7 @@ public class GCPPubSubService implements MessageQueueService
         }
         catch(Exception e)
         {
-            System.out.println(e);
+            logger.error(e.getMessage());
         }
         return subscriptions;
     }
