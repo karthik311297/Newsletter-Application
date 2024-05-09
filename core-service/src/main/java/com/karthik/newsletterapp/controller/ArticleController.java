@@ -1,6 +1,9 @@
 package com.karthik.newsletterapp.controller;
 
+import java.util.Objects;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,14 +31,16 @@ public class ArticleController
         article.setTitle(articleRequest.getTitle());
         article.setContent(articleRequest.getContent());
         Article saved = articleService.createArticle(article, articleRequest.getUserID());
-        return ResponseEntity.ok("Article saved with id : " + saved.getId());
+        return Objects.isNull(saved) ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid User")
+                : ResponseEntity.ok("Article saved with id : " + saved.getId());
     }
     
     @PostMapping("/like")
     public ResponseEntity<String> likeArticle(@RequestBody ArticleLikeRequest articleLikeRequest)
     {
-        articleService.likeArticle(articleLikeRequest.getArticleID(), articleLikeRequest.getUserID());
-        return ResponseEntity.ok("Article Liked!");
+        int liked = articleService.likeArticle(articleLikeRequest.getArticleID(), articleLikeRequest.getUserID());
+        return liked == 0 ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article does not exist!")
+                : ResponseEntity.ok("Article Liked!");
     }
     
     @GetMapping("/countlikes/{articleID}")

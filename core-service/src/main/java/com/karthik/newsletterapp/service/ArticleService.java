@@ -45,7 +45,7 @@ public class ArticleService
                 .orElse(0L);
     }
     
-    public void likeArticle(Long articleID, Long userID)
+    public int likeArticle(Long articleID, Long userID)
     {
         Optional<Article> optionalArticle = articleRepository
                 .findById(articleID);
@@ -57,6 +57,8 @@ public class ArticleService
             articleLiked.setArticle(optionalArticle.get());
             articleLiked.setUserDetail(optionalUser.get());
             articleLikedRepository.save(articleLiked);
+            return 1;
         }
+        return 0;
     }
 }
