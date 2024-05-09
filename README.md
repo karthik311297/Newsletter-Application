@@ -51,7 +51,7 @@ Tasks Status :
 - [x] Like and Count likes for articles.
 - [ ] Refactor the Code.
 - [ ] Verify project run as jars in command line.
-- [ ] Proper logging. (currently doing System.out.println!)
+- [x] Configure logging. 
 - [ ] Optimize the jpa respositories, so that SQL scripts generated are optimized.
 
 ---
