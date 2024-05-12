@@ -67,6 +67,14 @@ create table if not exists article_liked (
 	primary key(article, userDetail)
 );
 
+create table if not exists comment (
+	id bigserial not null,
+	content varchar not null,
+	article bigint not null,
+	foreign key(article) references article on delete cascade on update cascade,
+	primary key(id)
+);
+
 
 drop table userdetail ;
 
@@ -78,6 +86,10 @@ drop table article_newsletter ;
 
 drop table subscription;
 
+drop table article_liked ;
+
+drop table comment ;
+
 
 select * from userdetail ;
 
@@ -85,10 +97,13 @@ select * from article a ;
 
 select * from newsletter n;
 
-select * from subscription s;
 
 select * from article_newsletter an ;
 
+select * from subscription s;
+
 select * from article_liked ;
+
+select * from comment;
 
 ```

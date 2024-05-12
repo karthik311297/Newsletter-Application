@@ -47,12 +47,12 @@ Tasks Status :
 - [x] Subscribing to a Newsletter using GCP pubsub topic subscription.
 - [x] Sending email when article is published in newsletter.
 - [x] Get all articles published in newsletter.
-- [ ] Commenting on articles.
+- [x] Commenting on articles.
 - [x] Like and Count likes for articles.
 - [ ] Refactor the Code.
-- [ ] Verify project run as jars in command line.
+- [x] Verify project run as jars in command line.
 - [x] Configure logging. 
-- [ ] Optimize the jpa respositories, so that SQL scripts generated are optimized.
+- [ ] Optimize the jpa repositories, so that SQL scripts generated are optimized.
 
 ---
 
