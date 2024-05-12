@@ -11,5 +11,5 @@ import com.karthik.newsletterapp.model.identifier.SubscriptionID;
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription,SubscriptionID>
 {
-    List<Subscription> findByNewsletterId(Long newsletterID);
+    List<Subscription> findAllByNewsletterId(Long newsletterID);
 }

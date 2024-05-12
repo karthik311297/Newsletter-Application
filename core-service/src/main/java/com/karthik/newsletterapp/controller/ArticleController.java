@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.karthik.newsletterapp.controller.requests.ArticleLikeRequest;
 import com.karthik.newsletterapp.controller.requests.ArticleRequest;
+import com.karthik.newsletterapp.exception.ArticleNotFoundException;
+import com.karthik.newsletterapp.exception.UserNotFoundException;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.service.ArticleService;
 
@@ -30,17 +32,29 @@ public class ArticleController
         Article article = new Article();
         article.setTitle(articleRequest.getTitle());
         article.setContent(articleRequest.getContent());
-        Article saved = articleService.createArticle(article, articleRequest.getUserID());
-        return Objects.isNull(saved) ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid User")
-                : ResponseEntity.ok("Article saved with id : " + saved.getId());
+        try
+        {
+            Article saved = articleService.createArticle(article, articleRequest.getUserID());
+            return ResponseEntity.ok("Article saved with id : " + saved.getId());
+        }
+        catch(UserNotFoundException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
     @PostMapping("/like")
     public ResponseEntity<String> likeArticle(@RequestBody ArticleLikeRequest articleLikeRequest)
     {
-        int liked = articleService.likeArticle(articleLikeRequest.getArticleID(), articleLikeRequest.getUserID());
-        return liked == 0 ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Article does not exist!")
-                : ResponseEntity.ok("Article Liked!");
+        try
+        {
+            articleService.likeArticle(articleLikeRequest.getArticleID(), articleLikeRequest.getUserID());
+            return ResponseEntity.ok("Article Liked!");
+        }
+        catch(UserNotFoundException | ArticleNotFoundException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
     @GetMapping("/countlikes/{articleID}")

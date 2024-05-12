@@ -2,7 +2,6 @@ package com.karthik.newsletterapp.service;
 
 import static com.karthik.messaging.Topics.EMAIL_TOPIC;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.karthik.messaging.EmailMessageBody;
 import com.karthik.messaging.Message;
 import com.karthik.messaging.publisher.GCPPubSubPublisher;
+import com.karthik.newsletterapp.exception.ArticleNotFoundException;
+import com.karthik.newsletterapp.exception.NewsletterNotFoundException;
+import com.karthik.newsletterapp.exception.UserNotFoundException;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.model.ArticleNewsletter;
 import com.karthik.newsletterapp.model.Newsletter;
@@ -46,38 +48,35 @@ public class NewsletterService
     @Autowired
     private GCPPubSubPublisher gcpPubSubPublisher;
     
-    public Newsletter createNewsletter(Newsletter newsletter, Long userID)
+    public Newsletter createNewsletter(Newsletter newsletter, Long userID) throws UserNotFoundException
     {
         Optional<UserDetail> optionalUser = userRepository
                 .findById(userID);
-        if(optionalUser.isPresent())
-        {
-            newsletter.setUserDetail(optionalUser.get());
-            return newsletterRepository.save(newsletter);
-        }
-        return null;
+        if(optionalUser.isEmpty()) throw new UserNotFoundException();
+        newsletter.setUserDetail(optionalUser.get());
+        return newsletterRepository.save(newsletter);
     }
     
     public ArticleNewsletter publishArticleInNewsletter(Long newsletterID, Long articleID)
             throws JsonProcessingException, InterruptedException
+            , ArticleNotFoundException, NewsletterNotFoundException
     {
         Optional<Newsletter> optionalNewsletter = newsletterRepository.findById(newsletterID);
         Optional<Article> optionalArticle = articleRepository.findById(articleID);
         ArticleNewsletter articleNewsletter = null;
-        if(optionalNewsletter.isPresent() && optionalArticle.isPresent())
-        {
-            List<String> subscriberEmailAddresses = getNewsletterSubscribers(newsletterID)
-                    .stream()
-                    .map(UserDetail::getEmailID)
-                    .collect(Collectors.toList());
-            Newsletter newsletter = optionalNewsletter.get();
-            Article article = optionalArticle.get();
-            articleNewsletter = new ArticleNewsletter();
-            articleNewsletter.setArticle(article);
-            articleNewsletter.setNewsletter(newsletter);
-            articleNewsletterRepository.save(articleNewsletter);
-            publishMessage(subscriberEmailAddresses, newsletter, article);
-        }
+        if(optionalNewsletter.isEmpty()) throw new NewsletterNotFoundException();
+        if(optionalArticle.isEmpty()) throw new ArticleNotFoundException();
+        List<String> subscriberEmailAddresses = getNewsletterSubscribers(newsletterID)
+                .stream()
+                .map(UserDetail::getEmailID)
+                .collect(Collectors.toList());
+        Newsletter newsletter = optionalNewsletter.get();
+        Article article = optionalArticle.get();
+        articleNewsletter = new ArticleNewsletter();
+        articleNewsletter.setArticle(article);
+        articleNewsletter.setNewsletter(newsletter);
+        articleNewsletterRepository.save(articleNewsletter);
+        publishMessage(subscriberEmailAddresses, newsletter, article);
         return articleNewsletter;
     }
     
@@ -94,39 +93,35 @@ public class NewsletterService
     }
     
     public Subscription subscribeToNewsletter(Long newsletterID, Long userID)
+            throws NewsletterNotFoundException, UserNotFoundException
     {
         Optional<UserDetail> optionalUser = userRepository
                 .findById(userID);
         Optional<Newsletter> optionalNewsletter = newsletterRepository.findById(newsletterID);
-        if(optionalUser.isPresent() && optionalNewsletter.isPresent())
-        {
-            Subscription s = new Subscription();
-            s.setNewsletter(optionalNewsletter.get());
-            s.setUserDetail(optionalUser.get());
-            return subscriptionRepository.save(s);
-        }
-        return null;
+        if(optionalUser.isEmpty()) throw new UserNotFoundException();
+        if(optionalNewsletter.isEmpty()) throw new NewsletterNotFoundException();
+        Subscription s = new Subscription();
+        s.setNewsletter(optionalNewsletter.get());
+        s.setUserDetail(optionalUser.get());
+        return subscriptionRepository.save(s);
     }
     
     private List<UserDetail> getNewsletterSubscribers(Long newsletterID)
     {
         return subscriptionRepository
-                .findByNewsletterId(newsletterID)
+                .findAllByNewsletterId(newsletterID)
                 .stream().map(Subscription::getUserDetail)
                 .collect(Collectors.toList());
     }
     
-    public List<Article> getArticlesInNewsletter(Long newsletterID)
+    public List<Article> getArticlesInNewsletter(Long newsletterID) throws NewsletterNotFoundException
     {
         Optional<Newsletter> optionalNewsletter = newsletterRepository.findById(newsletterID);
-        if(optionalNewsletter.isPresent())
-        {
-            return articleNewsletterRepository
-                    .findAllByNewsletter(optionalNewsletter.get())
-                    .stream()
-                    .map(ArticleNewsletter::getArticle)
-                    .collect(Collectors.toList());
-        }
-        return new ArrayList<>();
+        if(optionalNewsletter.isEmpty()) throw new NewsletterNotFoundException();
+        return articleNewsletterRepository
+                .findAllByNewsletter(optionalNewsletter.get())
+                .stream()
+                .map(ArticleNewsletter::getArticle)
+                .collect(Collectors.toList());
     }
 }

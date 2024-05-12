@@ -1,5 +1,6 @@
 package com.karthik.newsletterapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +18,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.karthik.newsletterapp.controller.requests.NewsletterArticlePublishRequest;
 import com.karthik.newsletterapp.controller.requests.NewsletterRequest;
 import com.karthik.newsletterapp.controller.requests.NewsletterSubscriptionRequest;
+import com.karthik.newsletterapp.exception.ArticleNotFoundException;
+import com.karthik.newsletterapp.exception.NewsletterNotFoundException;
+import com.karthik.newsletterapp.exception.UserNotFoundException;
 import com.karthik.newsletterapp.model.Article;
 import com.karthik.newsletterapp.model.ArticleNewsletter;
 import com.karthik.newsletterapp.model.Newsletter;
@@ -35,17 +39,29 @@ public class NewsletterController
     {
         Newsletter newsletter = new Newsletter();
         newsletter.setName(newsletterRequest.getName());
-        Newsletter saved = newsletterService.createNewsletter(newsletter, newsletterRequest.getUserID());
-        return Objects.isNull(saved) ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Invalid User")
-                : ResponseEntity.ok("Newsletter saved with id : " + saved.getId());
+        try
+        {
+            Newsletter saved = newsletterService.createNewsletter(newsletter, newsletterRequest.getUserID());
+            return ResponseEntity.ok("Newsletter saved with id : " + saved.getId());
+        }
+        catch(UserNotFoundException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
     @PostMapping("/subscribe")
     public ResponseEntity<String> subscribeToNewsletter(@RequestBody NewsletterSubscriptionRequest newsletterSubscriptionRequest)
     {
-        Subscription saved = newsletterService.subscribeToNewsletter(newsletterSubscriptionRequest.getNewsletterID(), newsletterSubscriptionRequest.getUserID());
-        return Objects.isNull(saved) ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Newsletter does not exist")
-                : ResponseEntity.ok("Successfully subscribed to the newsletter!");
+        try
+        {
+            newsletterService.subscribeToNewsletter(newsletterSubscriptionRequest.getNewsletterID(), newsletterSubscriptionRequest.getUserID());
+            return ResponseEntity.ok("Successfully subscribed to the newsletter!");
+        }
+        catch(UserNotFoundException | NewsletterNotFoundException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
     
     @PostMapping("/publish")
@@ -53,20 +69,30 @@ public class NewsletterController
     {
         try
         {
-            ArticleNewsletter saved = newsletterService.publishArticleInNewsletter(newsletterArticlePublishRequest.getNewsletterID(), newsletterArticlePublishRequest.getArticleID());
-            return Objects.isNull(saved) ? ResponseEntity.status(HttpStatus.NOT_FOUND).body("Newsletter does not exist")
-                    : ResponseEntity.ok("Successfully published article to the newsletter!");
+            newsletterService.publishArticleInNewsletter(newsletterArticlePublishRequest.getNewsletterID(), newsletterArticlePublishRequest.getArticleID());
+            return ResponseEntity.ok("Successfully published article to the newsletter!");
         }
         catch(JsonProcessingException | InterruptedException e)
         {
             return ResponseEntity.internalServerError().body("Failed to subscribe to newsletter!");
+        }
+        catch(NewsletterNotFoundException | ArticleNotFoundException e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
     
     @GetMapping("/{newsletterID}")
     public ResponseEntity<List<Article>> getArticlesInNewsletter(@PathVariable Long newsletterID)
     {
-        List<Article> articles = newsletterService.getArticlesInNewsletter(newsletterID);
+        List<Article> articles = new ArrayList<>();
+        try
+        {
+            articles = newsletterService.getArticlesInNewsletter(newsletterID);
+        }
+        catch(NewsletterNotFoundException e)
+        {
+        }
         return ResponseEntity.ok(articles);
     }
     
