@@ -6,13 +6,15 @@ __Project workflow :__ A user can create/save an article, additionally user will
 Other users will be able to subscribe to multiple newsletters, and when an article is published in that newsletter they will receive an email notification.
 Also users can like and comment on the articles.
 
-_Note: Will be uploading the updated High level Design diagram soon, where things will be clearer!_
+![High level design](/designdoc/NewsletterApp_HLD.png)
 
 ### Technology Used : 
 
 1. Java, Spring boot, Maven.
 
-2. PostgreSql, GCP pubsub. (currently using local docker containers for testing).
+2. PostgreSql. (currently using local container for testing) 
+
+3. GCP pubsub. (currently using local emulator container for testing)
 
 ``` This is a backend project, not planning for UI as of now!. ```
 
